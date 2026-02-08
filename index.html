@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة الاشتراكات - النسخة المتقدمة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        :root {
+            --primary: #6d28d9;
+            --primary-dark: #5b21b6;
+            --secondary: #06b6d4;
+            --dark-bg: #0f172a;
+            --dark-card: #1e293b;
+            --dark-border: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+            direction: rtl;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--primary);
+            position: relative;
+        }
+        
+        header h1 {
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .theme-toggle {
+            position: absolute;
+            left: 0;
+            top: 10px;
+            background-color: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle:hover {
+            transform: rotate(30deg);
+            background-color: var(--primary);
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .form-section {
+            flex: 1;
+            min-width: 350px;
+            background-color: var(--dark-card);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--dark-border);
+        }
+        
+        .subscriptions-section {
+            flex: 2;
+            min-width: 350px;
+            background-color: var(--dark-card);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--dark-border);
+        }
+        
+        .tasks-section {
+            flex: 1;
+            min-width: 350px;
+            background-color: var(--dark-card);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--dark-border);
+        }
+        
+        .section-title {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--dark-border);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #2d3748;
+            border: 1px solid var(--dark-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            color: var(--text-primary);
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.2);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .subscription-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        
+        .subscription-type {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .subscription-type input {
+            display: none;
+        }
+        
+        .subscription-type label {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            background-color: #2d3748;
+            border: 2px solid var(--dark-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .subscription-type input:checked + label {
+            background-color: rgba(109, 40, 217, 0.2);
+            border-color: var(--primary);
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .add-btn {
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: white;
+        }
+        
+        .add-btn:hover {
+            background: linear-gradient(135deg, var(--primary-dark), #7c3aed);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(109, 40, 217, 0.4);
+        }
+        
+        .reset-btn {
+            background-color: #2d3748;
+            color: var(--text-primary);
+            border: 1px solid var(--dark-border);
+        }
+        
+        .reset-btn:hover {
+            background-color: #374151;
+            transform: translateY(-2px);
+        }
+        
+        .logout-btn {
+            position: absolute;
+            left: 70px;
+            top: 10px;
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logout-btn:hover {
+            background-color: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid var(--dark-border);
+        }
+        
+        th {
+            background-color: rgba(30, 41, 59, 0.8);
+            font-weight: 700;
+            color: var(--text-primary);
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(10px);
+        }
+        
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status.active {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .status.warning {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .status.expired {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .task-status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .task-status.pending {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .task-status.in-progress {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .task-status.completed {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .priority {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .priority.high {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .priority.medium {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .priority.low {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        
+        .edit-btn {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .edit-btn:hover {
+            background-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .delete-btn {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .delete-btn:hover {
+            background-color: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .whatsapp-btn {
+            background-color: rgba(37, 211, 102, 0.2);
+            color: #25d366;
+            border: 1px solid rgba(37, 211, 102, 0.3);
+        }
+        
+        .whatsapp-btn:hover {
+            background-color: rgba(37, 211, 102, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .complete-btn {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .complete-btn:hover {
+            background-color: rgba(16, 185, 129, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .notes-cell {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .expiring-soon {
+            background-color: rgba(245, 158, 11, 0.1) !important;
+        }
+        
+        .expired {
+            background-color: rgba(239, 68, 68, 0.1) !important;
+        }
+        
+        .stats-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .stat-box {
+            flex: 1;
+            min-width: 200px;
+            background: linear-gradient(135deg, var(--dark-card), #1a2236);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid var(--dark-border);
+            transition: transform 0.3s;
+        }
+        
+        .stat-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .stat-icon.active {
+            background: linear-gradient(135deg, var(--success), #34d399);
+        }
+        
+        .stat-icon.warning {
+            background: linear-gradient(135deg, var(--warning), #fbbf24);
+        }
+        
+        .stat-icon.expired {
+            background: linear-gradient(135deg, var(--danger), #f87171);
+        }
+        
+        .stat-icon.money {
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+        }
+        
+        .stat-icon.tasks {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+        }
+        
+        .stat-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .stat-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .stat-details {
+            margin-top: 5px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .search-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .search-box {
+            flex: 2;
+            position: relative;
+        }
+        
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        .filter-box {
+            flex: 1;
+        }
+        
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+        
+        .login-box {
+            background: linear-gradient(135deg, var(--dark-card), #1a2236);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid var(--dark-border);
+            text-align: center;
+        }
+        
+        .login-title {
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            font-size: 2rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .login-input {
+            margin-bottom: 20px;
+        }
+        
+        .login-btn {
+            width: 100%;
+            margin-top: 20px;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: white;
+            padding: 15px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .login-btn:hover {
+            background: linear-gradient(135deg, var(--primary-dark), #7c3aed);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(109, 40, 217, 0.4);
+        }
+        
+        .login-message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .login-message.error {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            display: block;
+        }
+        
+        .login-message.success {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            display: block;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--dark-border);
+            padding-bottom: 10px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background-color: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            background-color: rgba(109, 40, 217, 0.1);
+            color: var(--primary);
+        }
+        
+        .tab.active {
+            background-color: rgba(109, 40, 217, 0.2);
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .task-item {
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--dark-border);
+            transition: all 0.3s;
+        }
+        
+        .task-item:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .task-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+        
+        .task-due-date {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .task-description {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .task-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .task-customer {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--dark-border);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .phone-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .phone-link:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+        
+        .whatsapp-link {
+            color: #25d366;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .whatsapp-link:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row, .buttons, .search-filter {
+                flex-direction: column;
+            }
+            
+            .subscription-types {
+                flex-direction: column;
+            }
+            
+            .theme-toggle {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 15px;
+            }
+            
+            .logout-btn {
+                position: relative;
+                left: 0;
+                top: 0;
+                margin-top: 10px;
+            }
+            
+            header {
+                padding-top: 20px;
+            }
+        }
+        
+        /* تأثيرات إضافية */
+        .glow {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 10px rgba(109, 40, 217, 0.5);
+            }
+            to {
+                box-shadow: 0 0 20px rgba(109, 40, 217, 0.8), 0 0 30px rgba(109, 40, 217, 0.6);
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- واجهة تسجيل الدخول -->
+    <div id="login-screen" class="login-container">
+        <div class="login-box">
+            <h1 class="login-title"><i class="fas fa-lock"></i> نظام إدارة الاشتراكات</h1>
+            <div class="login-input">
+                <input type="password" id="admin-password" placeholder="أدخل كلمة مرور المدير" class="login-input-field">
+            </div>
+            <div class="login-input">
+                <input type="password" id="admin-confirm-password" placeholder="تأكيد كلمة المرور (أول مرة فقط)" class="login-input-field">
+            </div>
+            <button id="login-btn" class="login-btn"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
+            <div id="login-message" class="login-message"></div>
+            <p style="margin-top: 20px; color: var(--text-secondary); font-size: 0.9rem;">
+                <i class="fas fa-info-circle"></i> في المرة الأولى، سيتم إنشاء كلمة مرور جديدة. في المرات التالية، استخدم كلمة المرور التي أنشأتها.
+            </p>
+        </div>
+    </div>
+    
+    <!-- واجهة النظام الرئيسية -->
+    <div id="main-system" class="container hidden">
+        <header>
+            <div class="theme-toggle" id="theme-toggle" title="تبديل الوضع">
+                <i class="fas fa-moon"></i>
+            </div>
+            <button class="logout-btn" id="logout-btn"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+            <h1><i class="fas fa-users-cog"></i> نظام إدارة الاشتراكات الاحترافي</h1>
+            <p>إضافة وإدارة المشتركين ومتابعة تواريخ انتهاء الاشتراكات</p>
+        </header>
+        
+        <div class="stats-container">
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-icon active">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="active-count">0</h3>
+                        <p>اشتراكات نشطة</p>
+                        <div class="stat-details">الإيرادات: <span id="active-revenue">0</span> ج.م</div>
+                    </div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-icon warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="warning-count">0</h3>
+                        <p>اشتراكات قريبة من الانتهاء</p>
+                        <div class="stat-details">الإيرادات: <span id="warning-revenue">0</span> ج.م</div>
+                    </div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-icon expired">
+                        <i class="fas fa-user-times"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="expired-count">0</h3>
+                        <p>اشتراكات منتهية</p>
+                        <div class="stat-details">الإيرادات: <span id="expired-revenue">0</span> ج.م</div>
+                    </div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-icon tasks">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pending-tasks">0</h3>
+                        <p>مهام معلقة</p>
+                        <div class="stat-details">مستعجل: <span id="urgent-tasks">0</span> مهمة</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-icon money">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-revenue">0</h3>
+                        <p>إجمالي الإيرادات</p>
+                        <div class="stat-details">من جميع الاشتراكات</div>
+                    </div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="avg-revenue">0</h3>
+                        <p>متوسط قيمة الاشتراك</p>
+                        <div class="stat-details">متوسط المبلغ لكل مشترك</div>
+                    </div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #06b6d4, #22d3ee);">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-subscriptions">0</h3>
+                        <p>إجمالي المشتركين</p>
+                        <div class="stat-details">جميع الاشتراكات المسجلة</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="subscriptions"><i class="fas fa-users"></i> المشتركين</button>
+            <button class="tab" data-tab="tasks"><i class="fas fa-tasks"></i> المهام والمتابعة</button>
+            <button class="tab" data-tab="interactions"><i class="fas fa-comments"></i> سجل التفاعلات</button>
+        </div>
+        
+        <div id="subscriptions-tab" class="tab-content">
+            <div class="main-content">
+                <section class="form-section">
+                    <h2 class="section-title"><i class="fas fa-user-plus"></i> إضافة مشترك جديد</h2>
+                    <form id="subscription-form">
+                        <div class="form-group">
+                            <label for="name">اسم المشترك *</label>
+                            <input type="text" id="name" required placeholder="أدخل الاسم الكامل">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="username">اسم المستخدم *</label>
+                                <input type="text" id="username" required placeholder="اسم المستخدم للتسجيل">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">كلمة المرور *</label>
+                                <input type="text" id="password" required placeholder="كلمة مرور المشترك">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone">رقم الهاتف *</label>
+                                <input type="tel" id="phone" required placeholder="مثل: 01234567890">
+                            </div>
+                            <div class="form-group">
+                                <label for="alt-phone">رقم بديل (اختياري)</label>
+                                <input type="tel" id="alt-phone" placeholder="رقم هاتف إضافي">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>نوع الاشتراك *</label>
+                            <div class="subscription-types">
+                                <div class="subscription-type">
+                                    <input type="radio" id="type-basic" name="subscription-type" value="أساسي" checked>
+                                    <label for="type-basic">أساسي</label>
+                                </div>
+                                <div class="subscription-type">
+                                    <input type="radio" id="type-premium" name="subscription-type" value="متميز">
+                                    <label for="type-premium">متميز</label>
+                                </div>
+                                <div class="subscription-type">
+                                    <input type="radio" id="type-vip" name="subscription-type" value="VIP">
+                                    <label for="type-vip">VIP</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="amount">المبلغ المدفوع *</label>
+                                <input type="number" id="amount" required placeholder="المبلغ بالجنيه">
+                            </div>
+                            <div class="form-group">
+                                <label for="start-date">تاريخ البدء *</label>
+                                <input type="date" id="start-date" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="duration">مدة الاشتراك *</label>
+                            <select id="duration" required>
+                                <option value="3">3 شهور</option>
+                                <option value="6">6 شهور</option>
+                                <option value="12">سنة واحدة</option>
+                                <option value="24">سنتين</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="notes">ملاحظات إضافية</label>
+                            <textarea id="notes" rows="3" placeholder="أي ملاحظات إضافية عن المشترك..."></textarea>
+                        </div>
+                        
+                        <div class="buttons">
+                            <button type="submit" class="add-btn"><i class="fas fa-plus-circle"></i> إضافة المشترك</button>
+                            <button type="button" class="reset-btn" id="reset-btn"><i class="fas fa-redo"></i> مسح النموذج</button>
+                        </div>
+                    </form>
+                </section>
+                
+                <section class="subscriptions-section">
+                    <h2 class="section-title"><i class="fas fa-list-alt"></i> قائمة المشتركين</h2>
+                    
+                    <div class="search-filter">
+                        <div class="search-box">
+                            <input type="text" id="search-input" placeholder="ابحث عن مشترك بالاسم أو الهاتف...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="filter-box">
+                            <select id="filter-status">
+                                <option value="all">جميع الحالات</option>
+                                <option value="active">نشط فقط</option>
+                                <option value="warning">قريب الانتهاء</option>
+                                <option value="expired">منتهي</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="overflow-x: auto;">
+                        <table id="subscriptions-table">
+                            <thead>
+                                <tr>
+                                    <th>الاسم</th>
+                                    <th>المستخدم</th>
+                                    <th>الهاتف</th>
+                                    <th>نوع الاشتراك</th>
+                                    <th>المبلغ</th>
+                                    <th>البداية</th>
+                                    <th>النهاية</th>
+                                    <th>الحالة</th>
+                                    <th>ملاحظات</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subscriptions-list">
+                                <!-- سيتم ملء هذا القسم بالبيانات من JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </div>
+        
+        <div id="tasks-tab" class="tab-content hidden">
+            <div class="main-content">
+                <section class="form-section">
+                    <h2 class="section-title"><i class="fas fa-plus-circle"></i> إضافة مهمة جديدة</h2>
+                    <form id="task-form">
+                        <div class="form-group">
+                            <label for="task-title">عنوان المهمة *</label>
+                            <input type="text" id="task-title" required placeholder="مثل: متابعة تجديد اشتراك أحمد">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="task-customer">المشترك المرتبط</label>
+                            <select id="task-customer">
+                                <option value="">اختر مشترك (اختياري)</option>
+                                <!-- سيتم ملء هذا من البيانات -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="task-priority">الأولوية *</label>
+                                <select id="task-priority" required>
+                                    <option value="high">عالية</option>
+                                    <option value="medium" selected>متوسطة</option>
+                                    <option value="low">منخفضة</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="task-due-date">تاريخ الاستحقاق *</label>
+                                <input type="date" id="task-due-date" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="task-description">وصف المهمة</label>
+                            <textarea id="task-description" rows="3" placeholder="وصف تفصيلي للمهمة..."></textarea>
+                        </div>
+                        
+                        <div class="buttons">
+                            <button type="submit" class="add-btn"><i class="fas fa-plus-circle"></i> إضافة المهمة</button>
+                            <button type="button" class="reset-btn" id="reset-task-btn"><i class="fas fa-redo"></i> مسح النموذج</button>
+                        </div>
+                    </form>
+                </section>
+                
+                <section class="tasks-section">
+                    <h2 class="section-title"><i class="fas fa-tasks"></i> قائمة المهام اليومية</h2>
+                    
+                    <div class="search-filter">
+                        <div class="search-box">
+                            <input type="text" id="task-search-input" placeholder="ابحث عن مهمة...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="filter-box">
+                            <select id="task-filter-status">
+                                <option value="all">جميع المهام</option>
+                                <option value="pending">معلقة فقط</option>
+                                <option value="in-progress">قيد التنفيذ</option>
+                                <option value="completed">مكتملة</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="tasks-list">
+                        <!-- سيتم ملء هذا القسم بالبيانات من JavaScript -->
+                    </div>
+                </section>
+            </div>
+        </div>
+        
+        <div id="interactions-tab" class="tab-content hidden">
+            <div class="subscriptions-section">
+                <h2 class="section-title"><i class="fas fa-comments"></i> سجل التفاعلات مع المشتركين</h2>
+                
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" id="interaction-search-input" placeholder="ابحث عن تفاعل...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="filter-box">
+                        <select id="interaction-filter-customer">
+                            <option value="all">جميع المشتركين</option>
+                            <!-- سيتم ملء هذا من البيانات -->
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="interactions-list">
+                    <!-- سيتم ملء هذا القسم بالبيانات من JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 نظام إدارة الاشتراكات الاحترافي. جميع الحقوق محفوظة.</p>
+            <p>تم التطوير باستخدام HTML و CSS و JavaScript</p>
+        </footer>
+    </div>
+
+    <script>
+        // ==================== نظام تسجيل الدخول الآمن ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginScreen = document.getElementById('login-screen');
+            const mainSystem = document.getElementById('main-system');
+            const loginBtn = document.getElementById('login-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            const adminPasswordInput = document.getElementById('admin-password');
+            const adminConfirmPasswordInput = document.getElementById('admin-confirm-password');
+            const loginMessage = document.getElementById('login-message');
+            
+            // التحقق مما إذا كان هناك كلمة مرور محفوظة
+            const savedPassword = localStorage.getItem('adminPassword');
+            const isFirstTime = savedPassword === null;
+            
+            // إذا كانت المرة الأولى، أظهر حقل تأكيد كلمة المرور
+            if (isFirstTime) {
+                adminConfirmPasswordInput.style.display = 'block';
+            } else {
+                adminConfirmPasswordInput.style.display = 'none';
+            }
+            
+            // زر تسجيل الدخول
+            loginBtn.addEventListener('click', function() {
+                const password = adminPasswordInput.value.trim();
+                const confirmPassword = adminConfirmPasswordInput.value.trim();
+                
+                if (!password) {
+                    showLoginMessage('يجب إدخال كلمة المرور', 'error');
+                    return;
+                }
+                
+                if (isFirstTime) {
+                    // المرة الأولى - إنشاء كلمة مرور جديدة
+                    if (password.length < 6) {
+                        showLoginMessage('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
+                        return;
+                    }
+                    
+                    if (password !== confirmPassword) {
+                        showLoginMessage('كلمة المرور وتأكيدها غير متطابقين', 'error');
+                        return;
+                    }
+                    
+                    // حفظ كلمة المرور (في الواقع يجب تشفيرها)
+                    localStorage.setItem('adminPassword', btoa(password)); // تشفير بسيط
+                    showLoginMessage('تم إنشاء كلمة المرور بنجاح! يتم تسجيل الدخول...', 'success');
+                    
+                    setTimeout(() => {
+                        loginScreen.style.display = 'none';
+                        mainSystem.classList.remove('hidden');
+                        initializeSystem();
+                    }, 1500);
+                } else {
+                    // المرات التالية - التحقق من كلمة المرور
+                    const savedPassword = localStorage.getItem('adminPassword');
+                    
+                    if (btoa(password) === savedPassword) {
+                        showLoginMessage('تم تسجيل الدخول بنجاح!', 'success');
+                        
+                        setTimeout(() => {
+                            loginScreen.style.display = 'none';
+                            mainSystem.classList.remove('hidden');
+                            initializeSystem();
+                        }, 1000);
+                    } else {
+                        showLoginMessage('كلمة المرور غير صحيحة', 'error');
+                    }
+                }
+            });
+            
+            // زر تسجيل الخروج
+            logoutBtn.addEventListener('click', function() {
+                if (confirm('هل تريد تسجيل الخروج؟')) {
+                    mainSystem.classList.add('hidden');
+                    loginScreen.style.display = 'flex';
+                    adminPasswordInput.value = '';
+                    adminConfirmPasswordInput.value = '';
+                    loginMessage.textContent = '';
+                    loginMessage.className = 'login-message';
+                }
+            });
+            
+            // السماح بالدخول بالضغط على Enter
+            adminPasswordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loginBtn.click();
+                }
+            });
+            
+            adminConfirmPasswordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loginBtn.click();
+                }
+            });
+            
+            // دالة لعرض رسائل تسجيل الدخول
+            function showLoginMessage(message, type) {
+                loginMessage.textContent = message;
+                loginMessage.className = `login-message ${type}`;
+            }
+        });
+        
+        // ==================== تهيئة النظام بعد تسجيل الدخول ====================
+        function initializeSystem() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('start-date').value = today;
+            document.getElementById('task-due-date').value = today;
+            
+            // تحميل البيانات المحفوظة
+            loadSubscriptions();
+            loadTasks();
+            loadInteractions();
+            
+            // تحديث الإحصائيات
+            updateStats();
+            
+            // التحقق اليومي من الاشتراكات المنتهية أو القريبة من الانتهاء
+            checkExpiringSubscriptions();
+            
+            // إنشاء مهام تلقائية للمشتركين القريبين من الانتهاء
+            createAutoTasksForExpiringSubscriptions();
+            
+            // إضافة تأثيرات للعناصر
+            addAnimations();
+            
+            // إعداد نظام التبويب
+            setupTabs();
+        }
+        
+        // ==================== نظام التبويب ====================
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // إزالة النشاط من جميع التبويبات
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.add('hidden'));
+                    
+                    // إضافة النشاط للتبويب المحدد
+                    this.classList.add('active');
+                    document.getElementById(`${targetTab}-tab`).classList.remove('hidden');
+                    
+                    // تحديث المحتوى حسب التبويب
+                    if (targetTab === 'tasks') {
+                        loadTasks();
+                    } else if (targetTab === 'interactions') {
+                        loadInteractions();
+                    }
+                });
+            });
+        }
+        
+        // ==================== نظام المهام ====================
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        let interactions = JSON.parse(localStorage.getItem('interactions')) || [];
+        let subscriptions = JSON.parse(localStorage.getItem('subscriptions')) || [];
+        let editIndex = -1;
+        let editTaskIndex = -1;
+        
+        // دالة لحفظ البيانات في localStorage
+        function saveSubscriptions() {
+            localStorage.setItem('subscriptions', JSON.stringify(subscriptions));
+            updateStats();
+            updateCustomerDropdowns();
+        }
+        
+        function saveTasks() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            updateStats();
+        }
+        
+        function saveInteractions() {
+            localStorage.setItem('interactions', JSON.stringify(interactions));
+        }
+        
+        // دالة لتحميل وعرض المشتركين
+        function loadSubscriptions() {
+            const tbody = document.getElementById('subscriptions-list');
+            tbody.innerHTML = '';
+            
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const filterStatus = document.getElementById('filter-status').value;
+            
+            const filteredSubscriptions = subscriptions.filter(sub => {
+                const matchesSearch = sub.name.toLowerCase().includes(searchTerm) || 
+                                     sub.username.toLowerCase().includes(searchTerm) ||
+                                     sub.phone.includes(searchTerm) ||
+                                     (sub.altPhone && sub.altPhone.includes(searchTerm));
+                
+                const matchesFilter = filterStatus === 'all' || 
+                                     (filterStatus === 'active' && sub.status === 'active') ||
+                                     (filterStatus === 'warning' && sub.status === 'warning') ||
+                                     (filterStatus === 'expired' && sub.status === 'expired');
+                
+                return matchesSearch && matchesFilter;
+            });
+            
+            if (filteredSubscriptions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 30px; color: var(--text-secondary);">لا توجد اشتراكات لعرضها</td></tr>`;
+                return;
+            }
+            
+            filteredSubscriptions.forEach((sub, index) => {
+                const startDate = new Date(sub.startDate);
+                const endDate = new Date(startDate);
+                endDate.setMonth(endDate.getMonth() + parseInt(sub.duration));
+                
+                updateSubscriptionStatus(sub, index);
+                
+                const formattedStartDate = formatDate(startDate);
+                const formattedEndDate = formatDate(endDate);
+                
+                let rowClass = '';
+                if (sub.status === 'warning') rowClass = 'expiring-soon';
+                if (sub.status === 'expired') rowClass = 'expired';
+                
+                let statusText = '';
+                let statusClass = '';
+                if (sub.status === 'active') {
+                    statusText = 'نشط';
+                    statusClass = 'active';
+                } else if (sub.status === 'warning') {
+                    statusText = 'قريب الانتهاء';
+                    statusClass = 'warning';
+                } else {
+                    statusText = 'منتهي';
+                    statusClass = 'expired';
+                }
+                
+                const phoneLink = `tel:${sub.phone}`;
+                const whatsappLink = `https://wa.me/${sub.phone.replace(/\D/g, '')}`;
+                
+                const row = document.createElement('tr');
+                row.className = rowClass;
+                row.innerHTML = `
+                    <td>${sub.name}</td>
+                    <td>${sub.username}</td>
+                    <td>
+                        <a href="${phoneLink}" class="phone-link" title="اتصال">
+                            <i class="fas fa-phone"></i> ${sub.phone}
+                        </a>
+                        ${sub.altPhone ? `<br><small><a href="tel:${sub.altPhone}" class="phone-link"><i class="fas fa-phone-alt"></i> ${sub.altPhone}</a></small>` : ''}
+                    </td>
+                    <td>${sub.type}</td>
+                    <td>${sub.amount} ج.م</td>
+                    <td>${formattedStartDate}</td>
+                    <td>${formattedEndDate}</td>
+                    <td><span class="status ${statusClass}">${statusText}</span></td>
+                    <td class="notes-cell" title="${sub.notes}">${sub.notes || '-'}</td>
+                    <td>
+                        <div class="actions">
+                            <a href="${whatsappLink}" target="_blank" class="action-btn whatsapp-btn" title="فتح واتساب">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                            <button class="action-btn edit-btn" onclick="editSubscription(${index})" title="تعديل">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteSubscription(${index})" title="حذف">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="action-btn complete-btn" onclick="addTaskForSubscription(${index})" title="إضافة مهمة متابعة">
+                                <i class="fas fa-tasks"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        // دالة لتحميل وعرض المهام
+        function loadTasks() {
+            const tasksList = document.getElementById('tasks-list');
+            tasksList.innerHTML = '';
+            
+            const searchTerm = document.getElementById('task-search-input')?.value.toLowerCase() || '';
+            const filterStatus = document.getElementById('task-filter-status')?.value || 'all';
+            
+            const filteredTasks = tasks.filter(task => {
+                const matchesSearch = task.title.toLowerCase().includes(searchTerm) || 
+                                     (task.description && task.description.toLowerCase().includes(searchTerm));
+                
+                const matchesFilter = filterStatus === 'all' || 
+                                     (filterStatus === 'pending' && task.status === 'pending') ||
+                                     (filterStatus === 'in-progress' && task.status === 'in-progress') ||
+                                     (filterStatus === 'completed' && task.status === 'completed');
+                
+                return matchesSearch && matchesFilter;
+            });
+            
+            if (filteredTasks.length === 0) {
+                tasksList.innerHTML = `<div style="text-align: center; padding: 30px; color: var(--text-secondary);">لا توجد مهام لعرضها</div>`;
+                return;
+            }
+            
+            filteredTasks.forEach((task, index) => {
+                const taskElement = document.createElement('div');
+                taskElement.className = 'task-item';
+                
+                const customerName = task.customerId !== undefined ? 
+                    (subscriptions[task.customerId]?.name || 'مشترك محذوف') : 
+                    'عام';
+                
+                const dueDate = new Date(task.dueDate);
+                const formattedDueDate = formatDate(dueDate);
+                const today = new Date();
+                const isOverdue = dueDate < today && task.status !== 'completed';
+                
+                let priorityText = '';
+                let priorityClass = '';
+                if (task.priority === 'high') {
+                    priorityText = 'عالية';
+                    priorityClass = 'high';
+                } else if (task.priority === 'medium') {
+                    priorityText = 'متوسطة';
+                    priorityClass = 'medium';
+                } else {
+                    priorityText = 'منخفضة';
+                    priorityClass = 'low';
+                }
+                
+                let statusText = '';
+                let statusClass = '';
+                if (task.status === 'pending') {
+                    statusText = 'معلقة';
+                    statusClass = 'pending';
+                } else if (task.status === 'in-progress') {
+                    statusText = 'قيد التنفيذ';
+                    statusClass = 'in-progress';
+                } else {
+                    statusText = 'مكتملة';
+                    statusClass = 'completed';
+                }
+                
+                taskElement.innerHTML = `
+                    <div class="task-header">
+                        <div class="task-title">${task.title} ${isOverdue ? '<span style="color: #ef4444; font-size: 0.8rem;">(متأخرة)</span>' : ''}</div>
+                        <div class="task-due-date">${formattedDueDate}</div>
+                    </div>
+                    ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
+                    <div class="task-footer">
+                        <div style="display: flex; gap: 10px;">
+                            <span class="priority ${priorityClass}">${priorityText}</span>
+                            <span class="task-status ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="task-actions">
+                            ${task.status !== 'completed' ? `
+                                <button class="action-btn complete-btn" onclick="completeTask(${index})" title="إكمال المهمة">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            ` : ''}
+                            <button class="action-btn edit-btn" onclick="editTask(${index})" title="تعديل المهمة">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteTask(${index})" title="حذف المهمة">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    ${task.customerId !== undefined ? `
+                        <div class="task-customer">
+                            <i class="fas fa-user"></i> مرتبط بـ: ${customerName}
+                        </div>
+                    ` : ''}
+                `;
+                
+                if (isOverdue) {
+                    taskElement.style.borderLeft = '4px solid #ef4444';
+                }
+                
+                tasksList.appendChild(taskElement);
+            });
+        }
+        
+        // دالة لتحميل وعرض التفاعلات
+        function loadInteractions() {
+            const interactionsList = document.getElementById('interactions-list');
+            interactionsList.innerHTML = '';
+            
+            const searchTerm = document.getElementById('interaction-search-input')?.value.toLowerCase() || '';
+            const filterCustomer = document.getElementById('interaction-filter-customer')?.value || 'all';
+            
+            const filteredInteractions = interactions.filter(interaction => {
+                const matchesSearch = interaction.notes.toLowerCase().includes(searchTerm) || 
+                                     interaction.type.toLowerCase().includes(searchTerm);
+                
+                const matchesFilter = filterCustomer === 'all' || 
+                                     interaction.customerId === parseInt(filterCustomer);
+                
+                return matchesSearch && matchesFilter;
+            });
+            
+            if (filteredInteractions.length === 0) {
+                interactionsList.innerHTML = `<div style="text-align: center; padding: 30px; color: var(--text-secondary);">لا توجد تفاعلات مسجلة</div>`;
+                return;
+            }
+            
+            filteredInteractions.forEach((interaction, index) => {
+                const interactionElement = document.createElement('div');
+                interactionElement.className = 'task-item';
+                
+                const customerName = interaction.customerId !== undefined ? 
+                    (subscriptions[interaction.customerId]?.name || 'مشترك محذوف') : 
+                    'عام';
+                
+                const date = new Date(interaction.date);
+                const formattedDate = formatDate(date);
+                
+                let typeText = '';
+                let typeColor = '';
+                if (interaction.type === 'call') {
+                    typeText = 'مكالمة هاتفية';
+                    typeColor = '#3b82f6';
+                } else if (interaction.type === 'whatsapp') {
+                    typeText = 'رسالة واتساب';
+                    typeColor = '#25d366';
+                } else if (interaction.type === 'meeting') {
+                    typeText = 'مقابلة';
+                    typeColor = '#8b5cf6';
+                } else if (interaction.type === 'email') {
+                    typeText = 'بريد إلكتروني';
+                    typeColor = '#f59e0b';
+                } else {
+                    typeText = 'تفاعل عام';
+                    typeColor = '#10b981';
+                }
+                
+                interactionElement.innerHTML = `
+                    <div class="task-header">
+                        <div class="task-title">${typeText}</div>
+                        <div class="task-due-date">${formattedDate}</div>
+                    </div>
+                    <div class="task-description">${interaction.notes}</div>
+                    <div class="task-footer">
+                        <div style="display: flex; gap: 10px;">
+                            <span style="color: ${typeColor}; font-weight: 600;">${typeText}</span>
+                        </div>
+                        <div class="task-customer">
+                            <i class="fas fa-user"></i> مع: ${customerName}
+                        </div>
+                    </div>
+                `;
+                
+                interactionsList.appendChild(interactionElement);
+            });
+        }
+        
+        // دالة لتحديث قوائم المشتركين في القوائم المنسدلة
+        function updateCustomerDropdowns() {
+            const taskCustomerSelect = document.getElementById('task-customer');
+            const interactionCustomerSelect = document.getElementById('interaction-filter-customer');
+            
+            // حفظ القيم المحددة حالياً
+            const selectedTaskCustomer = taskCustomerSelect.value;
+            const selectedInteractionCustomer = interactionCustomerSelect.value;
+            
+            // تحديث قائمة المشتركين للمهام
+            taskCustomerSelect.innerHTML = '<option value="">اختر مشترك (اختياري)</option>';
+            subscriptions.forEach((sub, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${sub.name} - ${sub.phone}`;
+                taskCustomerSelect.appendChild(option);
+            });
+            
+            // تحديث قائمة المشتركين للتفاعلات
+            interactionCustomerSelect.innerHTML = '<option value="all">جميع المشتركين</option>';
+            subscriptions.forEach((sub, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${sub.name} - ${sub.phone}`;
+                interactionCustomerSelect.appendChild(option);
+            });
+            
+            // استعادة القيم المحددة إن وجدت
+            if (selectedTaskCustomer) {
+                taskCustomerSelect.value = selectedTaskCustomer;
+            }
+            
+            if (selectedInteractionCustomer) {
+                interactionCustomerSelect.value = selectedInteractionCustomer;
+            }
+        }
+        
+        // ==================== أحداث النماذج ====================
+        // نموذج إضافة مشترك
+        document.getElementById('subscription-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const phone = document.getElementById('phone').value;
+            const altPhone = document.getElementById('alt-phone').value;
+            const type = document.querySelector('input[name="subscription-type"]:checked').value;
+            const amount = document.getElementById('amount').value;
+            const startDate = document.getElementById('start-date').value;
+            const duration = document.getElementById('duration').value;
+            const notes = document.getElementById('notes').value;
+            
+            const endDate = calculateEndDate(startDate, duration);
+            const status = getSubscriptionStatus(startDate, duration);
+            
+            const subscription = {
+                name,
+                username,
+                password,
+                phone,
+                altPhone,
+                type,
+                amount,
+                startDate,
+                duration,
+                endDate,
+                status,
+                notes
+            };
+            
+            if (editIndex === -1) {
+                subscriptions.push(subscription);
+                showNotification('تم إضافة المشترك بنجاح!', 'success');
+                
+                // إضافة تفاعل تلقائي
+                addInteraction(subscriptions.length - 1, 'general', `تم إضافة مشترك جديد: ${name}`);
+            } else {
+                subscriptions[editIndex] = subscription;
+                editIndex = -1;
+                document.querySelector('.add-btn').innerHTML = '<i class="fas fa-plus-circle"></i> إضافة المشترك';
+                showNotification('تم تحديث بيانات المشترك بنجاح!', 'info');
+                
+                // إضافة تفاعل تلقائي
+                addInteraction(editIndex, 'general', `تم تحديث بيانات المشترك: ${name}`);
+            }
+            
+            saveSubscriptions();
+            loadSubscriptions();
+            resetSubscriptionForm();
+        });
+        
+        // نموذج إضافة مهمة
+        document.getElementById('task-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('task-title').value;
+            const customerId = document.getElementById('task-customer').value;
+            const priority = document.getElementById('task-priority').value;
+            const dueDate = document.getElementById('task-due-date').value;
+            const description = document.getElementById('task-description').value;
+            
+            const task = {
+                title,
+                customerId: customerId ? parseInt(customerId) : undefined,
+                priority,
+                dueDate,
+                description,
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+            
+            if (editTaskIndex === -1) {
+                tasks.push(task);
+                showNotification('تم إضافة المهمة بنجاح!', 'success');
+                
+                // إضافة تفاعل تلقائي إذا كانت المهمة مرتبطة بمشترك
+                if (customerId) {
+                    addInteraction(parseInt(customerId), 'general', `تم إضافة مهمة متابعة: ${title}`);
+                }
+            } else {
+                tasks[editTaskIndex] = task;
+                editTaskIndex = -1;
+                document.querySelector('#task-form .add-btn').innerHTML = '<i class="fas fa-plus-circle"></i> إضافة المهمة';
+                showNotification('تم تحديث المهمة بنجاح!', 'info');
+            }
+            
+            saveTasks();
+            loadTasks();
+            resetTaskForm();
+        });
+        
+        // ==================== وظائف المشتركين ====================
+        function editSubscription(index) {
+            const sub = subscriptions[index];
+            
+            document.getElementById('name').value = sub.name;
+            document.getElementById('username').value = sub.username;
+            document.getElementById('password').value = sub.password;
+            document.getElementById('phone').value = sub.phone;
+            document.getElementById('alt-phone').value = sub.altPhone;
+            
+            document.querySelectorAll('input[name="subscription-type"]').forEach(radio => {
+                if (radio.value === sub.type) {
+                    radio.checked = true;
+                }
+            });
+            
+            document.getElementById('amount').value = sub.amount;
+            document.getElementById('start-date').value = sub.startDate;
+            document.getElementById('duration').value = sub.duration;
+            document.getElementById('notes').value = sub.notes || '';
+            
+            editIndex = index;
+            document.querySelector('.add-btn').innerHTML = '<i class="fas fa-save"></i> حفظ التعديلات';
+            
+            document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+            document.querySelector('.form-section').classList.add('glow');
+            setTimeout(() => {
+                document.querySelector('.form-section').classList.remove('glow');
+            }, 3000);
+        }
+        
+        function deleteSubscription(index) {
+            if (confirm('هل أنت متأكد من حذف هذا المشترك؟')) {
+                const deletedName = subscriptions[index].name;
+                subscriptions.splice(index, 1);
+                saveSubscriptions();
+                loadSubscriptions();
+                showNotification(`تم حذف المشترك ${deletedName} بنجاح!`, 'danger');
+                
+                // إضافة تفاعل تلقائي
+                addInteraction(index, 'general', `تم حذف المشترك: ${deletedName}`);
+            }
+        }
+        
+        function addTaskForSubscription(index) {
+            const sub = subscriptions[index];
+            const today = new Date();
+            const dueDate = new Date(today);
+            dueDate.setDate(dueDate.getDate() + 3); // المهمة خلال 3 أيام
+            
+            document.getElementById('task-title').value = `متابعة تجديد اشتراك ${sub.name}`;
+            document.getElementById('task-customer').value = index;
+            document.getElementById('task-priority').value = 'high';
+            document.getElementById('task-due-date').value = dueDate.toISOString().split('T')[0];
+            document.getElementById('task-description').value = `متابعة تجديد اشتراك ${sub.name} قبل انتهاء الاشتراك. الهاتف: ${sub.phone}`;
+            
+            // التبديل إلى تبويب المهام
+            document.querySelector('[data-tab="tasks"]').click();
+            document.getElementById('task-title').focus();
+        }
+        
+        // ==================== وظائف المهام ====================
+        function editTask(index) {
+            const task = tasks[index];
+            
+            document.getElementById('task-title').value = task.title;
+            document.getElementById('task-customer').value = task.customerId || '';
+            document.getElementById('task-priority').value = task.priority;
+            document.getElementById('task-due-date').value = task.dueDate;
+            document.getElementById('task-description').value = task.description || '';
+            
+            editTaskIndex = index;
+            document.querySelector('#task-form .add-btn').innerHTML = '<i class="fas fa-save"></i> حفظ التعديلات';
+            
+            document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function deleteTask(index) {
+            if (confirm('هل أنت متأكد من حذف هذه المهمة؟')) {
+                tasks.splice(index, 1);
+                saveTasks();
+                loadTasks();
+                showNotification('تم حذف المهمة بنجاح!', 'danger');
+            }
+        }
+        
+        function completeTask(index) {
+            tasks[index].status = 'completed';
+            saveTasks();
+            loadTasks();
+            showNotification('تم إكمال المهمة بنجاح!', 'success');
+            
+            // إضافة تفاعل تلقائي إذا كانت المهمة مرتبطة بمشترك
+            if (tasks[index].customerId !== undefined) {
+                addInteraction(tasks[index].customerId, 'general', `تم إكمال مهمة: ${tasks[index].title}`);
+            }
+        }
+        
+        // ==================== وظائف التفاعلات ====================
+        function addInteraction(customerId, type, notes) {
+            const interaction = {
+                customerId,
+                type,
+                notes,
+                date: new Date().toISOString()
+            };
+            
+            interactions.unshift(interaction); // إضافة في البداية
+            if (interactions.length > 100) {
+                interactions.pop(); // إزالة التفاعلات القديمة إذا تجاوزت 100
+            }
+            
+            saveInteractions();
+        }
+        
+        // ==================== وظائف مساعدة ====================
+        function resetSubscriptionForm() {
+            document.getElementById('subscription-form').reset();
+            editIndex = -1;
+            document.querySelector('.add-btn').innerHTML = '<i class="fas fa-plus-circle"></i> إضافة المشترك';
+            
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('start-date').value = today;
+            
+            document.querySelector('.form-section').classList.add('pulse');
+            setTimeout(() => {
+                document.querySelector('.form-section').classList.remove('pulse');
+            }, 1000);
+        }
+        
+        function resetTaskForm() {
+            document.getElementById('task-form').reset();
+            editTaskIndex = -1;
+            document.querySelector('#task-form .add-btn').innerHTML = '<i class="fas fa-plus-circle"></i> إضافة المهمة';
+            
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('task-due-date').value = today;
+            
+            document.querySelector('.form-section').classList.add('pulse');
+            setTimeout(() => {
+                document.querySelector('.form-section').classList.remove('pulse');
+            }, 1000);
+        }
+        
+        function calculateEndDate(startDate, duration) {
+            const date = new Date(startDate);
+            date.setMonth(date.getMonth() + parseInt(duration));
+            return date.toISOString().split('T')[0];
+        }
+        
+        function getSubscriptionStatus(startDate, duration) {
+            const today = new Date();
+            const start = new Date(startDate);
+            const end = new Date(start);
+            end.setMonth(end.getMonth() + parseInt(duration));
+            
+            if (end < today) {
+                return 'expired';
+            }
+            
+            const daysUntilEnd = Math.floor((end - today) / (1000 * 60 * 60 * 24));
+            if (daysUntilEnd <= 7) {
+                return 'warning';
+            }
+            
+            return 'active';
+        }
+        
+        function updateSubscriptionStatus(sub, index) {
+            const status = getSubscriptionStatus(sub.startDate, sub.duration);
+            
+            if (sub.status !== status) {
+                subscriptions[index].status = status;
+                saveSubscriptions();
+            }
+        }
+        
+        function formatDate(date) {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        
+        // ==================== التحقق من الاشتراكات المنتهية ====================
+        function checkExpiringSubscriptions() {
+            const today = new Date();
+            let expiredCount = 0;
+            let warningCount = 0;
+            
+            subscriptions.forEach((sub, index) => {
+                const start = new Date(sub.startDate);
+                const end = new Date(start);
+                end.setMonth(end.getMonth() + parseInt(sub.duration));
+                
+                const daysUntilEnd = Math.floor((end - today) / (1000 * 60 * 60 * 24));
+                
+                if (daysUntilEnd < 0 && sub.status !== 'expired') {
+                    expiredCount++;
+                    
+                    // إشعار بالمشتركين المنتهية اشتراكاتهم
+                    if (expiredCount === 1) {
+                        showNotification(`انتهت اشتراكات ${expiredCount} مشتركين. راجع قائمة المشتركين.`, 'warning');
+                    }
+                } else if (daysUntilEnd <= 7 && sub.status === 'active') {
+                    warningCount++;
+                    
+                    // إشعار بالمشتركين القريبين من الانتهاء
+                    if (warningCount === 1) {
+                        showNotification(`هناك ${warningCount} اشتراكات قريبة من الانتهاء. راجع قائمة المشتركين.`, 'warning');
+                    }
+                }
+            });
+        }
+        
+        // ==================== إنشاء مهام تلقائية ====================
+        function createAutoTasksForExpiringSubscriptions() {
+            const today = new Date();
+            
+            subscriptions.forEach((sub, index) => {
+                const start = new Date(sub.startDate);
+                const end = new Date(start);
+                end.setMonth(end.getMonth() + parseInt(sub.duration));
+                
+                const daysUntilEnd = Math.floor((end - today) / (1000 * 60 * 60 * 24));
+                
+                // إذا كان الاشتراك ينتهي خلال 7 أيام ولم يكن لديه مهمة متابعة
+                if (daysUntilEnd <= 7 && daysUntilEnd > 0) {
+                    const hasExistingTask = tasks.some(task => 
+                        task.customerId === index && 
+                        task.title.includes(sub.name) && 
+                        task.status !== 'completed'
+                    );
+                    
+                    if (!hasExistingTask) {
+                        const dueDate = new Date(today);
+                        dueDate.setDate(dueDate.getDate() + 2); // المهمة خلال يومين
+                        
+                        const task = {
+                            title: `متابعة تجديد اشتراك ${sub.name}`,
+                            customerId: index,
+                            priority: 'high',
+                            dueDate: dueDate.toISOString().split('T')[0],
+                            description: `اشتراك ${sub.name} ينتهي في ${formatDate(end)}. الهاتف: ${sub.phone}`,
+                            status: 'pending',
+                            createdAt: new Date().toISOString(),
+                            autoGenerated: true
+                        };
+                        
+                        tasks.push(task);
+                    }
+                }
+            });
+            
+            saveTasks();
+        }
+        
+        // ==================== تحديث الإحصائيات ====================
+        function updateStats() {
+            const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
+            const warningSubscriptions = subscriptions.filter(sub => sub.status === 'warning');
+            const expiredSubscriptions = subscriptions.filter(sub => sub.status === 'expired');
+            
+            const activeCount = activeSubscriptions.length;
+            const warningCount = warningSubscriptions.length;
+            const expiredCount = expiredSubscriptions.length;
+            
+            const activeRevenue = calculateRevenue(activeSubscriptions);
+            const warningRevenue = calculateRevenue(warningSubscriptions);
+            const expiredRevenue = calculateRevenue(expiredSubscriptions);
+            const totalRevenue = calculateRevenue(subscriptions);
+            
+            const pendingTasks = tasks.filter(task => task.status === 'pending').length;
+            const urgentTasks = tasks.filter(task => 
+                task.status === 'pending' && 
+                task.priority === 'high' && 
+                new Date(task.dueDate) <= new Date(new Date().setDate(new Date().getDate() + 3))
+            ).length;
+            
+            const totalSubscriptions = subscriptions.length;
+            const avgRevenue = totalSubscriptions > 0 ? Math.round(totalRevenue / totalSubscriptions) : 0;
+            
+            document.getElementById('active-count').textContent = activeCount;
+            document.getElementById('warning-count').textContent = warningCount;
+            document.getElementById('expired-count').textContent = expiredCount;
+            document.getElementById('pending-tasks').textContent = pendingTasks;
+            document.getElementById('urgent-tasks').textContent = urgentTasks;
+            
+            document.getElementById('active-revenue').textContent = formatNumber(activeRevenue);
+            document.getElementById('warning-revenue').textContent = formatNumber(warningRevenue);
+            document.getElementById('expired-revenue').textContent = formatNumber(expiredRevenue);
+            
+            document.getElementById('total-revenue').textContent = formatNumber(totalRevenue);
+            document.getElementById('avg-revenue').textContent = formatNumber(avgRevenue);
+            document.getElementById('total-subscriptions').textContent = totalSubscriptions;
+            
+            const stats = document.querySelectorAll('.stat-box');
+            stats.forEach(stat => {
+                stat.classList.add('pulse');
+                setTimeout(() => {
+                    stat.classList.remove('pulse');
+                }, 500);
+            });
+        }
+        
+        function calculateRevenue(subscriptionsArray) {
+            return subscriptionsArray.reduce((total, sub) => {
+                return total + parseInt(sub.amount || 0);
+            }, 0);
+        }
+        
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        // ==================== الإشعارات ====================
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 10px;
+                color: white;
+                font-weight: 600;
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            let bgColor;
+            if (type === 'success') bgColor = '#10b981';
+            else if (type === 'warning') bgColor = '#f59e0b';
+            else if (type === 'danger') bgColor = '#ef4444';
+            else bgColor = '#3b82f6';
+            
+            notification.style.backgroundColor = bgColor;
+            
+            let icon;
+            if (type === 'success') icon = 'fas fa-check-circle';
+            else if (type === 'warning') icon = 'fas fa-exclamation-triangle';
+            else if (type === 'danger') icon = 'fas fa-times-circle';
+            else icon = 'fas fa-info-circle';
+            
+            notification.innerHTML = `<i class="${icon}"></i> ${message}`;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // ==================== تأثيرات ====================
+        function addAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            const animatedElements = document.querySelectorAll('.form-section, .subscriptions-section, .tasks-section, .stat-box');
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.5s, transform 0.5s';
+                observer.observe(el);
+            });
+        }
+        
+        // ==================== أحداث البحث والتصفية ====================
+        document.getElementById('search-input')?.addEventListener('input', loadSubscriptions);
+        document.getElementById('filter-status')?.addEventListener('change', loadSubscriptions);
+        
+        document.getElementById('task-search-input')?.addEventListener('input', loadTasks);
+        document.getElementById('task-filter-status')?.addEventListener('change', loadTasks);
+        
+        document.getElementById('interaction-search-input')?.addEventListener('input', loadInteractions);
+        document.getElementById('interaction-filter-customer')?.addEventListener('change', loadInteractions);
+        
+        // ==================== أحداث الأزرار ====================
+        document.getElementById('reset-btn')?.addEventListener('click', resetSubscriptionForm);
+        document.getElementById('reset-task-btn')?.addEventListener('click', resetTaskForm);
+        
+        // ==================== تبديل الوضع ====================
+        document.getElementById('theme-toggle')?.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            if (icon.classList.contains('fa-moon')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                showNotification('تم تفعيل الوضع الفاتح', 'warning');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                showNotification('تم تفعيل الوضع الداكن', 'info');
+            }
+        });
+        
+        // ==================== بيانات تجريبية ====================
+        if (subscriptions.length === 0) {
+            const sampleSubscriptions = [
+                {
+                    name: 'أحمد محمد',
+                    username: 'ahmed2023',
+                    password: 'pass123',
+                    phone: '01012345678',
+                    altPhone: '01234567890',
+                    type: 'متميز',
+                    amount: '500',
+                    startDate: '2023-01-15',
+                    duration: '12',
+                    endDate: '2024-01-15',
+                    status: 'active',
+                    notes: 'مشترك نشط - يفضل التواصل عبر واتساب'
+                },
+                {
+                    name: 'سارة علي',
+                    username: 'sara_ali',
+                    password: 'sara@2023',
+                    phone: '01123456789',
+                    altPhone: '',
+                    type: 'VIP',
+                    amount: '1200',
+                    startDate: '2023-06-01',
+                    duration: '6',
+                    endDate: '2023-12-01',
+                    status: 'warning',
+                    notes: 'سيتم تجديد الاشتراك قريباً - تحتاج لمتابعة'
+                },
+                {
+                    name: 'محمود حسين',
+                    username: 'mahmoud_h',
+                    password: 'mh2023',
+                    phone: '01512345678',
+                    altPhone: '01098765432',
+                    type: 'أساسي',
+                    amount: '250',
+                    startDate: '2022-12-01',
+                    duration: '12',
+                    endDate: '2023-12-01',
+                    status: 'expired',
+                    notes: 'انتهى الاشتراك ولم يجدد - حاول التواصل معه'
+                }
+            ];
+            
+            subscriptions.push(...sampleSubscriptions);
+            
+            // إضافة مهام تجريبية
+            const sampleTasks = [
+                {
+                    title: 'متابعة تجديد اشتراك سارة علي',
+                    customerId: 1,
+                    priority: 'high',
+                    dueDate: new Date().toISOString().split('T')[0],
+                    description: 'اشتراك سارة علي ينتهي قريباً - الاتصال لتذكيرها بالتجديد',
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    title: 'الاتصال بمحمود حسين',
+                    customerId: 2,
+                    priority: 'medium',
+                    dueDate: new Date().toISOString().split('T')[0],
+                    description: 'الاتصال بمحمود حسين لمناقشة تجديد اشتراكه المنتهي',
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                }
+            ];
+            
+            tasks.push(...sampleTasks);
+            
+            // إضافة تفاعلات تجريبية
+            const sampleInteractions = [
+                {
+                    customerId: 0,
+                    type: 'whatsapp',
+                    notes: 'تم إرسال رسالة ترحيب عبر واتساب',
+                    date: new Date().toISOString()
+                },
+                {
+                    customerId: 1,
+                    type: 'call',
+                    notes: 'تم الاتصال لتذكير بتجديد الاشتراك - وعدت بالرد خلال يومين',
+                    date: new Date().toISOString()
+                }
+            ];
+            
+            interactions.push(...sampleInteractions);
+            
+            saveSubscriptions();
+            saveTasks();
+            saveInteractions();
+        }
+    </script>
+</body>
+</html>
