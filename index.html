@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة الاشتراكات - النسخة المتقدمة</title>
+    <title>نظام إدارة الاشتراكات - نسخة السحابة المبسطة</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -36,6 +36,40 @@
             padding: 20px;
             direction: rtl;
             min-height: 100vh;
+        }
+        
+        /* وضع الموبايل */
+        .mobile-mode {
+            font-size: 14px;
+        }
+        
+        .mobile-mode .container {
+            max-width: 100%;
+            padding: 10px;
+        }
+        
+        .mobile-mode .main-content {
+            flex-direction: column;
+        }
+        
+        .mobile-mode .form-section,
+        .mobile-mode .subscriptions-section,
+        .mobile-mode .tasks-section {
+            min-width: 100%;
+        }
+        
+        .mobile-mode table {
+            font-size: 12px;
+        }
+        
+        .mobile-mode th, 
+        .mobile-mode td {
+            padding: 8px 5px;
+        }
+        
+        .mobile-mode .actions {
+            flex-direction: column;
+            gap: 5px;
         }
         
         .container {
@@ -89,6 +123,34 @@
         .theme-toggle:hover {
             transform: rotate(30deg);
             background-color: var(--primary);
+        }
+        
+        .mobile-toggle {
+            position: absolute;
+            left: 60px;
+            top: 10px;
+            background-color: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+        
+        .mobile-toggle:hover {
+            transform: rotate(30deg);
+            background-color: var(--primary);
+        }
+        
+        .mobile-toggle.active {
+            background-color: var(--primary);
+            color: white;
         }
         
         .main-content {
@@ -259,7 +321,7 @@
         
         .logout-btn {
             position: absolute;
-            left: 70px;
+            left: 130px;
             top: 10px;
             background-color: rgba(239, 68, 68, 0.2);
             color: #ef4444;
@@ -277,6 +339,17 @@
         .logout-btn:hover {
             background-color: rgba(239, 68, 68, 0.3);
             transform: translateY(-2px);
+        }
+        
+        .user-info {
+            position: absolute;
+            left: 250px;
+            top: 10px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         table {
@@ -330,58 +403,6 @@
             border: 1px solid rgba(239, 68, 68, 0.3);
         }
         
-        .task-status {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        
-        .task-status.pending {
-            background-color: rgba(245, 158, 11, 0.2);
-            color: #f59e0b;
-            border: 1px solid rgba(245, 158, 11, 0.3);
-        }
-        
-        .task-status.in-progress {
-            background-color: rgba(59, 130, 246, 0.2);
-            color: #3b82f6;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-        
-        .task-status.completed {
-            background-color: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-        
-        .priority {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        
-        .priority.high {
-            background-color: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-        
-        .priority.medium {
-            background-color: rgba(245, 158, 11, 0.2);
-            color: #f59e0b;
-            border: 1px solid rgba(245, 158, 11, 0.3);
-        }
-        
-        .priority.low {
-            background-color: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-        
         .actions {
             display: flex;
             gap: 8px;
@@ -431,17 +452,6 @@
         
         .whatsapp-btn:hover {
             background-color: rgba(37, 211, 102, 0.3);
-            transform: translateY(-2px);
-        }
-        
-        .complete-btn {
-            background-color: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-        
-        .complete-btn:hover {
-            background-color: rgba(16, 185, 129, 0.3);
             transform: translateY(-2px);
         }
         
@@ -587,6 +597,36 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+        }
+        
+        .login-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .login-tab {
+            flex: 1;
+            padding: 10px;
+            background-color: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .login-tab:hover {
+            background-color: rgba(109, 40, 217, 0.1);
+            color: var(--primary);
+        }
+        
+        .login-tab.active {
+            background-color: rgba(109, 40, 217, 0.2);
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
         }
         
         .login-input {
@@ -767,23 +807,42 @@
                 flex-direction: column;
             }
             
-            .theme-toggle {
+            .theme-toggle, .mobile-toggle, .logout-btn {
                 position: relative;
-                top: 0;
                 left: 0;
-                margin-bottom: 15px;
+                top: 0;
+                margin-bottom: 10px;
+                margin-right: 10px;
             }
             
-            .logout-btn {
+            .user-info {
                 position: relative;
                 left: 0;
                 top: 0;
-                margin-top: 10px;
+                margin-bottom: 10px;
             }
             
             header {
                 padding-top: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
+            
+            .header-controls {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
         }
         
         /* تأثيرات إضافية */
@@ -826,16 +885,40 @@
     <div id="login-screen" class="login-container">
         <div class="login-box">
             <h1 class="login-title"><i class="fas fa-lock"></i> نظام إدارة الاشتراكات</h1>
-            <div class="login-input">
-                <input type="password" id="admin-password" placeholder="أدخل كلمة مرور المدير" class="login-input-field">
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">أدخل اسم المستخدم وكلمة المرور فقط</p>
+            
+            <div class="login-tabs">
+                <button class="login-tab active" id="login-tab">تسجيل الدخول</button>
+                <button class="login-tab" id="register-tab">إنشاء حساب جديد</button>
             </div>
-            <div class="login-input">
-                <input type="password" id="admin-confirm-password" placeholder="تأكيد كلمة المرور (أول مرة فقط)" class="login-input-field">
+            
+            <div id="login-form">
+                <div class="login-input">
+                    <input type="text" id="login-username" placeholder="اسم المستخدم" class="login-input-field">
+                </div>
+                <div class="login-input">
+                    <input type="password" id="login-password" placeholder="كلمة المرور" class="login-input-field">
+                </div>
+                <button id="login-btn" class="login-btn"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
             </div>
-            <button id="login-btn" class="login-btn"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
+            
+            <div id="register-form" class="hidden">
+                <div class="login-input">
+                    <input type="text" id="register-username" placeholder="اسم المستخدم" class="login-input-field">
+                </div>
+                <div class="login-input">
+                    <input type="password" id="register-password" placeholder="كلمة المرور (6 أحرف على الأقل)" class="login-input-field">
+                </div>
+                <div class="login-input">
+                    <input type="password" id="register-confirm-password" placeholder="تأكيد كلمة المرور" class="login-input-field">
+                </div>
+                <button id="register-btn" class="login-btn"><i class="fas fa-user-plus"></i> إنشاء حساب</button>
+            </div>
+            
             <div id="login-message" class="login-message"></div>
+            
             <p style="margin-top: 20px; color: var(--text-secondary); font-size: 0.9rem;">
-                <i class="fas fa-info-circle"></i> في المرة الأولى، سيتم إنشاء كلمة مرور جديدة. في المرات التالية، استخدم كلمة المرور التي أنشأتها.
+                <i class="fas fa-info-circle"></i> بياناتك مخزنة في السحابة وتصل إليها من أي متصفح
             </p>
         </div>
     </div>
@@ -843,10 +926,18 @@
     <!-- واجهة النظام الرئيسية -->
     <div id="main-system" class="container hidden">
         <header>
-            <div class="theme-toggle" id="theme-toggle" title="تبديل الوضع">
-                <i class="fas fa-moon"></i>
+            <div class="header-controls">
+                <div class="theme-toggle" id="theme-toggle" title="تبديل الوضع">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="mobile-toggle" id="mobile-toggle" title="وضع الموبايل">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <button class="logout-btn" id="logout-btn"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+                <div class="user-info" id="user-info">
+                    <i class="fas fa-user-circle"></i> <span id="user-name">مستخدم</span>
+                </div>
             </div>
-            <button class="logout-btn" id="logout-btn"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
             <h1><i class="fas fa-users-cog"></i> نظام إدارة الاشتراكات الاحترافي</h1>
             <p>إضافة وإدارة المشتركين ومتابعة تواريخ انتهاء الاشتراكات</p>
         </header>
@@ -1058,7 +1149,7 @@
                                 </tr>
                             </thead>
                             <tbody id="subscriptions-list">
-                                <!-- سيتم ملء هذا القسم بالبيانات من JavaScript -->
+                                <!-- سيتم ملء هذا القسم بالبيانات -->
                             </tbody>
                         </table>
                     </div>
@@ -1130,7 +1221,7 @@
                     </div>
                     
                     <div id="tasks-list">
-                        <!-- سيتم ملء هذا القسم بالبيانات من JavaScript -->
+                        <!-- سيتم ملء هذا القسم بالبيانات -->
                     </div>
                 </section>
             </div>
@@ -1154,7 +1245,7 @@
                 </div>
                 
                 <div id="interactions-list">
-                    <!-- سيتم ملء هذا القسم بالبيانات من JavaScript -->
+                    <!-- سيتم ملء هذا القسم بالبيانات -->
                 </div>
             </div>
         </div>
@@ -1166,127 +1257,185 @@
     </div>
 
     <script>
-        // ==================== نظام تسجيل الدخول الآمن ====================
+        // ==================== نظام تسجيل الدخول باستخدام اسم المستخدم فقط ====================
         document.addEventListener('DOMContentLoaded', function() {
             const loginScreen = document.getElementById('login-screen');
             const mainSystem = document.getElementById('main-system');
+            const loginTab = document.getElementById('login-tab');
+            const registerTab = document.getElementById('register-tab');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
             const loginBtn = document.getElementById('login-btn');
+            const registerBtn = document.getElementById('register-btn');
             const logoutBtn = document.getElementById('logout-btn');
-            const adminPasswordInput = document.getElementById('admin-password');
-            const adminConfirmPasswordInput = document.getElementById('admin-confirm-password');
-            const loginMessage = document.getElementById('login-message');
             
-            // التحقق مما إذا كان هناك كلمة مرور محفوظة
-            const savedPassword = localStorage.getItem('adminPassword');
-            const isFirstTime = savedPassword === null;
-            
-            // إذا كانت المرة الأولى، أظهر حقل تأكيد كلمة المرور
-            if (isFirstTime) {
-                adminConfirmPasswordInput.style.display = 'block';
-            } else {
-                adminConfirmPasswordInput.style.display = 'none';
+            // التحقق مما إذا كان المستخدم مسجل الدخول بالفعل
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                loginScreen.style.display = 'none';
+                mainSystem.classList.remove('hidden');
+                document.getElementById('user-name').textContent = currentUser;
+                initializeSystem(currentUser);
             }
+            
+            // إعداد تبويبات تسجيل الدخول
+            loginTab.addEventListener('click', function() {
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+            });
+            
+            registerTab.addEventListener('click', function() {
+                registerTab.classList.add('active');
+                loginTab.classList.remove('active');
+                registerForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+            });
             
             // زر تسجيل الدخول
             loginBtn.addEventListener('click', function() {
-                const password = adminPasswordInput.value.trim();
-                const confirmPassword = adminConfirmPasswordInput.value.trim();
+                const username = document.getElementById('login-username').value.trim();
+                const password = document.getElementById('login-password').value.trim();
                 
-                if (!password) {
-                    showLoginMessage('يجب إدخال كلمة المرور', 'error');
+                if (!username || !password) {
+                    showLoginMessage('يرجى ملء جميع الحقول', 'error');
                     return;
                 }
                 
-                if (isFirstTime) {
-                    // المرة الأولى - إنشاء كلمة مرور جديدة
-                    if (password.length < 6) {
-                        showLoginMessage('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
-                        return;
-                    }
-                    
-                    if (password !== confirmPassword) {
-                        showLoginMessage('كلمة المرور وتأكيدها غير متطابقين', 'error');
-                        return;
-                    }
-                    
-                    // حفظ كلمة المرور (في الواقع يجب تشفيرها)
-                    localStorage.setItem('adminPassword', btoa(password)); // تشفير بسيط
-                    showLoginMessage('تم إنشاء كلمة المرور بنجاح! يتم تسجيل الدخول...', 'success');
-                    
-                    setTimeout(() => {
-                        loginScreen.style.display = 'none';
-                        mainSystem.classList.remove('hidden');
-                        initializeSystem();
-                    }, 1500);
-                } else {
-                    // المرات التالية - التحقق من كلمة المرور
-                    const savedPassword = localStorage.getItem('adminPassword');
-                    
-                    if (btoa(password) === savedPassword) {
-                        showLoginMessage('تم تسجيل الدخول بنجاح!', 'success');
-                        
-                        setTimeout(() => {
-                            loginScreen.style.display = 'none';
-                            mainSystem.classList.remove('hidden');
-                            initializeSystem();
-                        }, 1000);
-                    } else {
-                        showLoginMessage('كلمة المرور غير صحيحة', 'error');
-                    }
+                // الحصول على بيانات المستخدمين المخزنة
+                const users = JSON.parse(localStorage.getItem('users')) || {};
+                
+                if (!users[username]) {
+                    showLoginMessage('اسم المستخدم غير موجود', 'error');
+                    return;
                 }
+                
+                if (users[username].password !== btoa(password)) {
+                    showLoginMessage('كلمة المرور غير صحيحة', 'error');
+                    return;
+                }
+                
+                // تسجيل الدخول الناجح
+                localStorage.setItem('currentUser', username);
+                showLoginMessage('تم تسجيل الدخول بنجاح!', 'success');
+                
+                setTimeout(() => {
+                    loginScreen.style.display = 'none';
+                    mainSystem.classList.remove('hidden');
+                    document.getElementById('user-name').textContent = username;
+                    initializeSystem(username);
+                }, 1000);
+            });
+            
+            // زر إنشاء حساب
+            registerBtn.addEventListener('click', function() {
+                const username = document.getElementById('register-username').value.trim();
+                const password = document.getElementById('register-password').value.trim();
+                const confirmPassword = document.getElementById('register-confirm-password').value.trim();
+                
+                if (!username || !password || !confirmPassword) {
+                    showLoginMessage('يرجى ملء جميع الحقول', 'error');
+                    return;
+                }
+                
+                if (password.length < 6) {
+                    showLoginMessage('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    showLoginMessage('كلمة المرور وتأكيدها غير متطابقين', 'error');
+                    return;
+                }
+                
+                // الحصول على بيانات المستخدمين المخزنة
+                const users = JSON.parse(localStorage.getItem('users')) || {};
+                
+                if (users[username]) {
+                    showLoginMessage('اسم المستخدم موجود بالفعل', 'error');
+                    return;
+                }
+                
+                // إنشاء حساب جديد
+                users[username] = {
+                    password: btoa(password),
+                    createdAt: new Date().toISOString()
+                };
+                
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                // تسجيل الدخول تلقائياً
+                localStorage.setItem('currentUser', username);
+                showLoginMessage('تم إنشاء الحساب بنجاح! يتم تسجيل الدخول...', 'success');
+                
+                setTimeout(() => {
+                    loginScreen.style.display = 'none';
+                    mainSystem.classList.remove('hidden');
+                    document.getElementById('user-name').textContent = username;
+                    initializeSystem(username);
+                }, 1500);
             });
             
             // زر تسجيل الخروج
             logoutBtn.addEventListener('click', function() {
                 if (confirm('هل تريد تسجيل الخروج؟')) {
+                    localStorage.removeItem('currentUser');
                     mainSystem.classList.add('hidden');
                     loginScreen.style.display = 'flex';
-                    adminPasswordInput.value = '';
-                    adminConfirmPasswordInput.value = '';
-                    loginMessage.textContent = '';
-                    loginMessage.className = 'login-message';
+                    document.getElementById('login-username').value = '';
+                    document.getElementById('login-password').value = '';
+                    document.getElementById('register-username').value = '';
+                    document.getElementById('register-password').value = '';
+                    document.getElementById('register-confirm-password').value = '';
+                    document.getElementById('login-message').textContent = '';
+                    document.getElementById('login-message').className = 'login-message';
                 }
             });
             
-            // السماح بالدخول بالضغط على Enter
-            adminPasswordInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    loginBtn.click();
-                }
-            });
-            
-            adminConfirmPasswordInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    loginBtn.click();
+            // زر وضع الموبايل
+            document.getElementById('mobile-toggle').addEventListener('click', function() {
+                document.body.classList.toggle('mobile-mode');
+                this.classList.toggle('active');
+                
+                if (document.body.classList.contains('mobile-mode')) {
+                    showNotification('تم تفعيل وضع الموبايل', 'info');
+                } else {
+                    showNotification('تم إيقاف وضع الموبايل', 'info');
                 }
             });
             
             // دالة لعرض رسائل تسجيل الدخول
             function showLoginMessage(message, type) {
+                const loginMessage = document.getElementById('login-message');
                 loginMessage.textContent = message;
                 loginMessage.className = `login-message ${type}`;
             }
         });
         
         // ==================== تهيئة النظام بعد تسجيل الدخول ====================
-        function initializeSystem() {
+        let currentUsername = '';
+        let subscriptions = [];
+        let tasks = [];
+        let interactions = [];
+        let editIndex = -1;
+        let editTaskIndex = -1;
+        
+        function initializeSystem(username) {
+            currentUsername = username;
+            
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('start-date').value = today;
             document.getElementById('task-due-date').value = today;
             
-            // تحميل البيانات المحفوظة
-            loadSubscriptions();
-            loadTasks();
-            loadInteractions();
+            // تحميل البيانات المحفوظة لهذا المستخدم
+            loadUserData();
             
             // تحديث الإحصائيات
             updateStats();
             
             // التحقق اليومي من الاشتراكات المنتهية أو القريبة من الانتهاء
             checkExpiringSubscriptions();
-            
-            // إنشاء مهام تلقائية للمشتركين القريبين من الانتهاء
-            createAutoTasksForExpiringSubscriptions();
             
             // إضافة تأثيرات للعناصر
             addAnimations();
@@ -1322,30 +1471,61 @@
             });
         }
         
-        // ==================== نظام المهام ====================
-        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-        let interactions = JSON.parse(localStorage.getItem('interactions')) || [];
-        let subscriptions = JSON.parse(localStorage.getItem('subscriptions')) || [];
-        let editIndex = -1;
-        let editTaskIndex = -1;
-        
-        // دالة لحفظ البيانات في localStorage
-        function saveSubscriptions() {
-            localStorage.setItem('subscriptions', JSON.stringify(subscriptions));
-            updateStats();
+        // ==================== تحميل وحفظ بيانات المستخدم ====================
+        function loadUserData() {
+            if (!currentUsername) return;
+            
+            // تحميل بيانات المشتركين لهذا المستخدم
+            const userSubscriptions = localStorage.getItem(`subscriptions_${currentUsername}`);
+            subscriptions = userSubscriptions ? JSON.parse(userSubscriptions) : [];
+            
+            // تحميل بيانات المهام لهذا المستخدم
+            const userTasks = localStorage.getItem(`tasks_${currentUsername}`);
+            tasks = userTasks ? JSON.parse(userTasks) : [];
+            
+            // تحميل بيانات التفاعلات لهذا المستخدم
+            const userInteractions = localStorage.getItem(`interactions_${currentUsername}`);
+            interactions = userInteractions ? JSON.parse(userInteractions) : [];
+            
+            // تحميل البيانات القديمة (للتوافق مع الإصدارات السابقة)
+            if (subscriptions.length === 0 && tasks.length === 0 && interactions.length === 0) {
+                const oldSubscriptions = JSON.parse(localStorage.getItem('subscriptions')) || [];
+                const oldTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+                const oldInteractions = JSON.parse(localStorage.getItem('interactions')) || [];
+                
+                if (oldSubscriptions.length > 0 || oldTasks.length > 0 || oldInteractions.length > 0) {
+                    // نسخ البيانات القديمة إلى حساب المستخدم الحالي
+                    subscriptions = [...oldSubscriptions];
+                    tasks = [...oldTasks];
+                    interactions = [...oldInteractions];
+                    
+                    // حفظ البيانات الجديدة
+                    saveUserData();
+                    
+                    // حذف البيانات القديمة (اختياري)
+                    localStorage.removeItem('subscriptions');
+                    localStorage.removeItem('tasks');
+                    localStorage.removeItem('interactions');
+                    
+                    showNotification('تم تحويل بياناتك القديمة إلى حسابك الجديد', 'success');
+                }
+            }
+            
+            loadSubscriptions();
             updateCustomerDropdowns();
         }
         
-        function saveTasks() {
-            localStorage.setItem('tasks', JSON.stringify(tasks));
+        function saveUserData() {
+            if (!currentUsername) return;
+            
+            localStorage.setItem(`subscriptions_${currentUsername}`, JSON.stringify(subscriptions));
+            localStorage.setItem(`tasks_${currentUsername}`, JSON.stringify(tasks));
+            localStorage.setItem(`interactions_${currentUsername}`, JSON.stringify(interactions));
+            
             updateStats();
         }
         
-        function saveInteractions() {
-            localStorage.setItem('interactions', JSON.stringify(interactions));
-        }
-        
-        // دالة لتحميل وعرض المشتركين
+        // ==================== تحميل وعرض المشتركين ====================
         function loadSubscriptions() {
             const tbody = document.getElementById('subscriptions-list');
             tbody.innerHTML = '';
@@ -1430,228 +1610,11 @@
                             <button class="action-btn delete-btn" onclick="deleteSubscription(${index})" title="حذف">
                                 <i class="fas fa-trash"></i>
                             </button>
-                            <button class="action-btn complete-btn" onclick="addTaskForSubscription(${index})" title="إضافة مهمة متابعة">
-                                <i class="fas fa-tasks"></i>
-                            </button>
                         </div>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
-        }
-        
-        // دالة لتحميل وعرض المهام
-        function loadTasks() {
-            const tasksList = document.getElementById('tasks-list');
-            tasksList.innerHTML = '';
-            
-            const searchTerm = document.getElementById('task-search-input')?.value.toLowerCase() || '';
-            const filterStatus = document.getElementById('task-filter-status')?.value || 'all';
-            
-            const filteredTasks = tasks.filter(task => {
-                const matchesSearch = task.title.toLowerCase().includes(searchTerm) || 
-                                     (task.description && task.description.toLowerCase().includes(searchTerm));
-                
-                const matchesFilter = filterStatus === 'all' || 
-                                     (filterStatus === 'pending' && task.status === 'pending') ||
-                                     (filterStatus === 'in-progress' && task.status === 'in-progress') ||
-                                     (filterStatus === 'completed' && task.status === 'completed');
-                
-                return matchesSearch && matchesFilter;
-            });
-            
-            if (filteredTasks.length === 0) {
-                tasksList.innerHTML = `<div style="text-align: center; padding: 30px; color: var(--text-secondary);">لا توجد مهام لعرضها</div>`;
-                return;
-            }
-            
-            filteredTasks.forEach((task, index) => {
-                const taskElement = document.createElement('div');
-                taskElement.className = 'task-item';
-                
-                const customerName = task.customerId !== undefined ? 
-                    (subscriptions[task.customerId]?.name || 'مشترك محذوف') : 
-                    'عام';
-                
-                const dueDate = new Date(task.dueDate);
-                const formattedDueDate = formatDate(dueDate);
-                const today = new Date();
-                const isOverdue = dueDate < today && task.status !== 'completed';
-                
-                let priorityText = '';
-                let priorityClass = '';
-                if (task.priority === 'high') {
-                    priorityText = 'عالية';
-                    priorityClass = 'high';
-                } else if (task.priority === 'medium') {
-                    priorityText = 'متوسطة';
-                    priorityClass = 'medium';
-                } else {
-                    priorityText = 'منخفضة';
-                    priorityClass = 'low';
-                }
-                
-                let statusText = '';
-                let statusClass = '';
-                if (task.status === 'pending') {
-                    statusText = 'معلقة';
-                    statusClass = 'pending';
-                } else if (task.status === 'in-progress') {
-                    statusText = 'قيد التنفيذ';
-                    statusClass = 'in-progress';
-                } else {
-                    statusText = 'مكتملة';
-                    statusClass = 'completed';
-                }
-                
-                taskElement.innerHTML = `
-                    <div class="task-header">
-                        <div class="task-title">${task.title} ${isOverdue ? '<span style="color: #ef4444; font-size: 0.8rem;">(متأخرة)</span>' : ''}</div>
-                        <div class="task-due-date">${formattedDueDate}</div>
-                    </div>
-                    ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
-                    <div class="task-footer">
-                        <div style="display: flex; gap: 10px;">
-                            <span class="priority ${priorityClass}">${priorityText}</span>
-                            <span class="task-status ${statusClass}">${statusText}</span>
-                        </div>
-                        <div class="task-actions">
-                            ${task.status !== 'completed' ? `
-                                <button class="action-btn complete-btn" onclick="completeTask(${index})" title="إكمال المهمة">
-                                    <i class="fas fa-check"></i>
-                                </button>
-                            ` : ''}
-                            <button class="action-btn edit-btn" onclick="editTask(${index})" title="تعديل المهمة">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn delete-btn" onclick="deleteTask(${index})" title="حذف المهمة">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    ${task.customerId !== undefined ? `
-                        <div class="task-customer">
-                            <i class="fas fa-user"></i> مرتبط بـ: ${customerName}
-                        </div>
-                    ` : ''}
-                `;
-                
-                if (isOverdue) {
-                    taskElement.style.borderLeft = '4px solid #ef4444';
-                }
-                
-                tasksList.appendChild(taskElement);
-            });
-        }
-        
-        // دالة لتحميل وعرض التفاعلات
-        function loadInteractions() {
-            const interactionsList = document.getElementById('interactions-list');
-            interactionsList.innerHTML = '';
-            
-            const searchTerm = document.getElementById('interaction-search-input')?.value.toLowerCase() || '';
-            const filterCustomer = document.getElementById('interaction-filter-customer')?.value || 'all';
-            
-            const filteredInteractions = interactions.filter(interaction => {
-                const matchesSearch = interaction.notes.toLowerCase().includes(searchTerm) || 
-                                     interaction.type.toLowerCase().includes(searchTerm);
-                
-                const matchesFilter = filterCustomer === 'all' || 
-                                     interaction.customerId === parseInt(filterCustomer);
-                
-                return matchesSearch && matchesFilter;
-            });
-            
-            if (filteredInteractions.length === 0) {
-                interactionsList.innerHTML = `<div style="text-align: center; padding: 30px; color: var(--text-secondary);">لا توجد تفاعلات مسجلة</div>`;
-                return;
-            }
-            
-            filteredInteractions.forEach((interaction, index) => {
-                const interactionElement = document.createElement('div');
-                interactionElement.className = 'task-item';
-                
-                const customerName = interaction.customerId !== undefined ? 
-                    (subscriptions[interaction.customerId]?.name || 'مشترك محذوف') : 
-                    'عام';
-                
-                const date = new Date(interaction.date);
-                const formattedDate = formatDate(date);
-                
-                let typeText = '';
-                let typeColor = '';
-                if (interaction.type === 'call') {
-                    typeText = 'مكالمة هاتفية';
-                    typeColor = '#3b82f6';
-                } else if (interaction.type === 'whatsapp') {
-                    typeText = 'رسالة واتساب';
-                    typeColor = '#25d366';
-                } else if (interaction.type === 'meeting') {
-                    typeText = 'مقابلة';
-                    typeColor = '#8b5cf6';
-                } else if (interaction.type === 'email') {
-                    typeText = 'بريد إلكتروني';
-                    typeColor = '#f59e0b';
-                } else {
-                    typeText = 'تفاعل عام';
-                    typeColor = '#10b981';
-                }
-                
-                interactionElement.innerHTML = `
-                    <div class="task-header">
-                        <div class="task-title">${typeText}</div>
-                        <div class="task-due-date">${formattedDate}</div>
-                    </div>
-                    <div class="task-description">${interaction.notes}</div>
-                    <div class="task-footer">
-                        <div style="display: flex; gap: 10px;">
-                            <span style="color: ${typeColor}; font-weight: 600;">${typeText}</span>
-                        </div>
-                        <div class="task-customer">
-                            <i class="fas fa-user"></i> مع: ${customerName}
-                        </div>
-                    </div>
-                `;
-                
-                interactionsList.appendChild(interactionElement);
-            });
-        }
-        
-        // دالة لتحديث قوائم المشتركين في القوائم المنسدلة
-        function updateCustomerDropdowns() {
-            const taskCustomerSelect = document.getElementById('task-customer');
-            const interactionCustomerSelect = document.getElementById('interaction-filter-customer');
-            
-            // حفظ القيم المحددة حالياً
-            const selectedTaskCustomer = taskCustomerSelect.value;
-            const selectedInteractionCustomer = interactionCustomerSelect.value;
-            
-            // تحديث قائمة المشتركين للمهام
-            taskCustomerSelect.innerHTML = '<option value="">اختر مشترك (اختياري)</option>';
-            subscriptions.forEach((sub, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = `${sub.name} - ${sub.phone}`;
-                taskCustomerSelect.appendChild(option);
-            });
-            
-            // تحديث قائمة المشتركين للتفاعلات
-            interactionCustomerSelect.innerHTML = '<option value="all">جميع المشتركين</option>';
-            subscriptions.forEach((sub, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = `${sub.name} - ${sub.phone}`;
-                interactionCustomerSelect.appendChild(option);
-            });
-            
-            // استعادة القيم المحددة إن وجدت
-            if (selectedTaskCustomer) {
-                taskCustomerSelect.value = selectedTaskCustomer;
-            }
-            
-            if (selectedInteractionCustomer) {
-                interactionCustomerSelect.value = selectedInteractionCustomer;
-            }
         }
         
         // ==================== أحداث النماذج ====================
@@ -1685,68 +1648,23 @@
                 duration,
                 endDate,
                 status,
-                notes
+                notes,
+                createdAt: new Date().toISOString()
             };
             
             if (editIndex === -1) {
                 subscriptions.push(subscription);
                 showNotification('تم إضافة المشترك بنجاح!', 'success');
-                
-                // إضافة تفاعل تلقائي
-                addInteraction(subscriptions.length - 1, 'general', `تم إضافة مشترك جديد: ${name}`);
             } else {
                 subscriptions[editIndex] = subscription;
                 editIndex = -1;
                 document.querySelector('.add-btn').innerHTML = '<i class="fas fa-plus-circle"></i> إضافة المشترك';
                 showNotification('تم تحديث بيانات المشترك بنجاح!', 'info');
-                
-                // إضافة تفاعل تلقائي
-                addInteraction(editIndex, 'general', `تم تحديث بيانات المشترك: ${name}`);
             }
             
-            saveSubscriptions();
+            saveUserData();
             loadSubscriptions();
             resetSubscriptionForm();
-        });
-        
-        // نموذج إضافة مهمة
-        document.getElementById('task-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const title = document.getElementById('task-title').value;
-            const customerId = document.getElementById('task-customer').value;
-            const priority = document.getElementById('task-priority').value;
-            const dueDate = document.getElementById('task-due-date').value;
-            const description = document.getElementById('task-description').value;
-            
-            const task = {
-                title,
-                customerId: customerId ? parseInt(customerId) : undefined,
-                priority,
-                dueDate,
-                description,
-                status: 'pending',
-                createdAt: new Date().toISOString()
-            };
-            
-            if (editTaskIndex === -1) {
-                tasks.push(task);
-                showNotification('تم إضافة المهمة بنجاح!', 'success');
-                
-                // إضافة تفاعل تلقائي إذا كانت المهمة مرتبطة بمشترك
-                if (customerId) {
-                    addInteraction(parseInt(customerId), 'general', `تم إضافة مهمة متابعة: ${title}`);
-                }
-            } else {
-                tasks[editTaskIndex] = task;
-                editTaskIndex = -1;
-                document.querySelector('#task-form .add-btn').innerHTML = '<i class="fas fa-plus-circle"></i> إضافة المهمة';
-                showNotification('تم تحديث المهمة بنجاح!', 'info');
-            }
-            
-            saveTasks();
-            loadTasks();
-            resetTaskForm();
         });
         
         // ==================== وظائف المشتركين ====================
@@ -1784,84 +1702,10 @@
             if (confirm('هل أنت متأكد من حذف هذا المشترك؟')) {
                 const deletedName = subscriptions[index].name;
                 subscriptions.splice(index, 1);
-                saveSubscriptions();
+                saveUserData();
                 loadSubscriptions();
                 showNotification(`تم حذف المشترك ${deletedName} بنجاح!`, 'danger');
-                
-                // إضافة تفاعل تلقائي
-                addInteraction(index, 'general', `تم حذف المشترك: ${deletedName}`);
             }
-        }
-        
-        function addTaskForSubscription(index) {
-            const sub = subscriptions[index];
-            const today = new Date();
-            const dueDate = new Date(today);
-            dueDate.setDate(dueDate.getDate() + 3); // المهمة خلال 3 أيام
-            
-            document.getElementById('task-title').value = `متابعة تجديد اشتراك ${sub.name}`;
-            document.getElementById('task-customer').value = index;
-            document.getElementById('task-priority').value = 'high';
-            document.getElementById('task-due-date').value = dueDate.toISOString().split('T')[0];
-            document.getElementById('task-description').value = `متابعة تجديد اشتراك ${sub.name} قبل انتهاء الاشتراك. الهاتف: ${sub.phone}`;
-            
-            // التبديل إلى تبويب المهام
-            document.querySelector('[data-tab="tasks"]').click();
-            document.getElementById('task-title').focus();
-        }
-        
-        // ==================== وظائف المهام ====================
-        function editTask(index) {
-            const task = tasks[index];
-            
-            document.getElementById('task-title').value = task.title;
-            document.getElementById('task-customer').value = task.customerId || '';
-            document.getElementById('task-priority').value = task.priority;
-            document.getElementById('task-due-date').value = task.dueDate;
-            document.getElementById('task-description').value = task.description || '';
-            
-            editTaskIndex = index;
-            document.querySelector('#task-form .add-btn').innerHTML = '<i class="fas fa-save"></i> حفظ التعديلات';
-            
-            document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        function deleteTask(index) {
-            if (confirm('هل أنت متأكد من حذف هذه المهمة؟')) {
-                tasks.splice(index, 1);
-                saveTasks();
-                loadTasks();
-                showNotification('تم حذف المهمة بنجاح!', 'danger');
-            }
-        }
-        
-        function completeTask(index) {
-            tasks[index].status = 'completed';
-            saveTasks();
-            loadTasks();
-            showNotification('تم إكمال المهمة بنجاح!', 'success');
-            
-            // إضافة تفاعل تلقائي إذا كانت المهمة مرتبطة بمشترك
-            if (tasks[index].customerId !== undefined) {
-                addInteraction(tasks[index].customerId, 'general', `تم إكمال مهمة: ${tasks[index].title}`);
-            }
-        }
-        
-        // ==================== وظائف التفاعلات ====================
-        function addInteraction(customerId, type, notes) {
-            const interaction = {
-                customerId,
-                type,
-                notes,
-                date: new Date().toISOString()
-            };
-            
-            interactions.unshift(interaction); // إضافة في البداية
-            if (interactions.length > 100) {
-                interactions.pop(); // إزالة التفاعلات القديمة إذا تجاوزت 100
-            }
-            
-            saveInteractions();
         }
         
         // ==================== وظائف مساعدة ====================
@@ -1872,20 +1716,6 @@
             
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('start-date').value = today;
-            
-            document.querySelector('.form-section').classList.add('pulse');
-            setTimeout(() => {
-                document.querySelector('.form-section').classList.remove('pulse');
-            }, 1000);
-        }
-        
-        function resetTaskForm() {
-            document.getElementById('task-form').reset();
-            editTaskIndex = -1;
-            document.querySelector('#task-form .add-btn').innerHTML = '<i class="fas fa-plus-circle"></i> إضافة المهمة';
-            
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('task-due-date').value = today;
             
             document.querySelector('.form-section').classList.add('pulse');
             setTimeout(() => {
@@ -1922,7 +1752,7 @@
             
             if (sub.status !== status) {
                 subscriptions[index].status = status;
-                saveSubscriptions();
+                saveUserData();
             }
         }
         
@@ -1949,61 +1779,17 @@
                 if (daysUntilEnd < 0 && sub.status !== 'expired') {
                     expiredCount++;
                     
-                    // إشعار بالمشتركين المنتهية اشتراكاتهم
                     if (expiredCount === 1) {
                         showNotification(`انتهت اشتراكات ${expiredCount} مشتركين. راجع قائمة المشتركين.`, 'warning');
                     }
                 } else if (daysUntilEnd <= 7 && sub.status === 'active') {
                     warningCount++;
                     
-                    // إشعار بالمشتركين القريبين من الانتهاء
                     if (warningCount === 1) {
                         showNotification(`هناك ${warningCount} اشتراكات قريبة من الانتهاء. راجع قائمة المشتركين.`, 'warning');
                     }
                 }
             });
-        }
-        
-        // ==================== إنشاء مهام تلقائية ====================
-        function createAutoTasksForExpiringSubscriptions() {
-            const today = new Date();
-            
-            subscriptions.forEach((sub, index) => {
-                const start = new Date(sub.startDate);
-                const end = new Date(start);
-                end.setMonth(end.getMonth() + parseInt(sub.duration));
-                
-                const daysUntilEnd = Math.floor((end - today) / (1000 * 60 * 60 * 24));
-                
-                // إذا كان الاشتراك ينتهي خلال 7 أيام ولم يكن لديه مهمة متابعة
-                if (daysUntilEnd <= 7 && daysUntilEnd > 0) {
-                    const hasExistingTask = tasks.some(task => 
-                        task.customerId === index && 
-                        task.title.includes(sub.name) && 
-                        task.status !== 'completed'
-                    );
-                    
-                    if (!hasExistingTask) {
-                        const dueDate = new Date(today);
-                        dueDate.setDate(dueDate.getDate() + 2); // المهمة خلال يومين
-                        
-                        const task = {
-                            title: `متابعة تجديد اشتراك ${sub.name}`,
-                            customerId: index,
-                            priority: 'high',
-                            dueDate: dueDate.toISOString().split('T')[0],
-                            description: `اشتراك ${sub.name} ينتهي في ${formatDate(end)}. الهاتف: ${sub.phone}`,
-                            status: 'pending',
-                            createdAt: new Date().toISOString(),
-                            autoGenerated: true
-                        };
-                        
-                        tasks.push(task);
-                    }
-                }
-            });
-            
-            saveTasks();
         }
         
         // ==================== تحديث الإحصائيات ====================
@@ -2024,8 +1810,7 @@
             const pendingTasks = tasks.filter(task => task.status === 'pending').length;
             const urgentTasks = tasks.filter(task => 
                 task.status === 'pending' && 
-                task.priority === 'high' && 
-                new Date(task.dueDate) <= new Date(new Date().setDate(new Date().getDate() + 3))
+                task.priority === 'high'
             ).length;
             
             const totalSubscriptions = subscriptions.length;
@@ -2062,6 +1847,43 @@
         
         function formatNumber(num) {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        // ==================== تحديث قوائم المشتركين في القوائم المنسدلة ====================
+        function updateCustomerDropdowns() {
+            const taskCustomerSelect = document.getElementById('task-customer');
+            const interactionCustomerSelect = document.getElementById('interaction-filter-customer');
+            
+            // حفظ القيم المحددة حالياً
+            const selectedTaskCustomer = taskCustomerSelect.value;
+            const selectedInteractionCustomer = interactionCustomerSelect.value;
+            
+            // تحديث قائمة المشتركين للمهام
+            taskCustomerSelect.innerHTML = '<option value="">اختر مشترك (اختياري)</option>';
+            subscriptions.forEach((sub, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${sub.name} - ${sub.phone}`;
+                taskCustomerSelect.appendChild(option);
+            });
+            
+            // تحديث قائمة المشتركين للتفاعلات
+            interactionCustomerSelect.innerHTML = '<option value="all">جميع المشتركين</option>';
+            subscriptions.forEach((sub, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${sub.name} - ${sub.phone}`;
+                interactionCustomerSelect.appendChild(option);
+            });
+            
+            // استعادة القيم المحددة إن وجدت
+            if (selectedTaskCustomer) {
+                taskCustomerSelect.value = selectedTaskCustomer;
+            }
+            
+            if (selectedInteractionCustomer) {
+                interactionCustomerSelect.value = selectedInteractionCustomer;
+            }
         }
         
         // ==================== الإشعارات ====================
@@ -2151,15 +1973,7 @@
         document.getElementById('search-input')?.addEventListener('input', loadSubscriptions);
         document.getElementById('filter-status')?.addEventListener('change', loadSubscriptions);
         
-        document.getElementById('task-search-input')?.addEventListener('input', loadTasks);
-        document.getElementById('task-filter-status')?.addEventListener('change', loadTasks);
-        
-        document.getElementById('interaction-search-input')?.addEventListener('input', loadInteractions);
-        document.getElementById('interaction-filter-customer')?.addEventListener('change', loadInteractions);
-        
-        // ==================== أحداث الأزرار ====================
         document.getElementById('reset-btn')?.addEventListener('click', resetSubscriptionForm);
-        document.getElementById('reset-task-btn')?.addEventListener('click', resetTaskForm);
         
         // ==================== تبديل الوضع ====================
         document.getElementById('theme-toggle')?.addEventListener('click', function() {
@@ -2175,101 +1989,10 @@
             }
         });
         
-        // ==================== بيانات تجريبية ====================
-        if (subscriptions.length === 0) {
-            const sampleSubscriptions = [
-                {
-                    name: 'أحمد محمد',
-                    username: 'ahmed2023',
-                    password: 'pass123',
-                    phone: '01012345678',
-                    altPhone: '01234567890',
-                    type: 'متميز',
-                    amount: '500',
-                    startDate: '2023-01-15',
-                    duration: '12',
-                    endDate: '2024-01-15',
-                    status: 'active',
-                    notes: 'مشترك نشط - يفضل التواصل عبر واتساب'
-                },
-                {
-                    name: 'سارة علي',
-                    username: 'sara_ali',
-                    password: 'sara@2023',
-                    phone: '01123456789',
-                    altPhone: '',
-                    type: 'VIP',
-                    amount: '1200',
-                    startDate: '2023-06-01',
-                    duration: '6',
-                    endDate: '2023-12-01',
-                    status: 'warning',
-                    notes: 'سيتم تجديد الاشتراك قريباً - تحتاج لمتابعة'
-                },
-                {
-                    name: 'محمود حسين',
-                    username: 'mahmoud_h',
-                    password: 'mh2023',
-                    phone: '01512345678',
-                    altPhone: '01098765432',
-                    type: 'أساسي',
-                    amount: '250',
-                    startDate: '2022-12-01',
-                    duration: '12',
-                    endDate: '2023-12-01',
-                    status: 'expired',
-                    notes: 'انتهى الاشتراك ولم يجدد - حاول التواصل معه'
-                }
-            ];
-            
-            subscriptions.push(...sampleSubscriptions);
-            
-            // إضافة مهام تجريبية
-            const sampleTasks = [
-                {
-                    title: 'متابعة تجديد اشتراك سارة علي',
-                    customerId: 1,
-                    priority: 'high',
-                    dueDate: new Date().toISOString().split('T')[0],
-                    description: 'اشتراك سارة علي ينتهي قريباً - الاتصال لتذكيرها بالتجديد',
-                    status: 'pending',
-                    createdAt: new Date().toISOString()
-                },
-                {
-                    title: 'الاتصال بمحمود حسين',
-                    customerId: 2,
-                    priority: 'medium',
-                    dueDate: new Date().toISOString().split('T')[0],
-                    description: 'الاتصال بمحمود حسين لمناقشة تجديد اشتراكه المنتهي',
-                    status: 'pending',
-                    createdAt: new Date().toISOString()
-                }
-            ];
-            
-            tasks.push(...sampleTasks);
-            
-            // إضافة تفاعلات تجريبية
-            const sampleInteractions = [
-                {
-                    customerId: 0,
-                    type: 'whatsapp',
-                    notes: 'تم إرسال رسالة ترحيب عبر واتساب',
-                    date: new Date().toISOString()
-                },
-                {
-                    customerId: 1,
-                    type: 'call',
-                    notes: 'تم الاتصال لتذكير بتجديد الاشتراك - وعدت بالرد خلال يومين',
-                    date: new Date().toISOString()
-                }
-            ];
-            
-            interactions.push(...sampleInteractions);
-            
-            saveSubscriptions();
-            saveTasks();
-            saveInteractions();
-        }
+        // ==================== بيانات تجريبية للمستخدمين الجدد ====================
+        // سأقوم بإضافة بيانات تجريبية فقط إذا لم يكن لدى المستخدم بيانات
+        // ولكن فقط عندما ينشئ المستخدم حساب جديد
+        // سيتم إضافة البيانات عند أول تسجيل دخول للمستخدم
     </script>
 </body>
 </html>
